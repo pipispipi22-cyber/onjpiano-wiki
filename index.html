@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>おんjぴあのwiki</title>
+    <style>
+        html { scroll-behavior: smooth; }
+        
+        body { 
+            background-color: #eceff1; 
+            color: #333; 
+            font-family: "Hiragino Kaku Gothic ProN", sans-serif; 
+            line-height: 1.7; 
+            margin: 0; 
+            padding: 0; 
+            overflow-x: hidden;
+        }
+
+        /* --- サイドメニュー --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -400px; 
+            width: 320px;
+            height: 100%;
+            background-color: #ffffff;
+            z-index: 1000;
+            transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            padding: 100px 30px 40px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            left: 0;
+            box-shadow: 15px 0 50px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h3 {
+            color: #003049;
+            font-size: 1.5rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #00b4d8;
+            padding-bottom: 10px;
+        }
+
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li { position: relative; }
+
+        .sidebar ul li a {
+            font-size: 1.1rem;
+            color: #333;
+            display: flex; 
+            align-items: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.1s ease;
+            cursor: pointer;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #f0f0f0 !important;
+            color: #003049 !important;
+        }
+
+        /* --- 三角ボタンのスタイル --- */
+        .triangle-btn {
+            display: inline-block;
+            margin-left: 2px;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            font-size: 0.7rem;
+            color: #0077b6;
+            text-decoration: none !important; 
+            vertical-align: middle;
+            position: relative;
+            top: -1px;
+        }
+        .triangle-btn:hover {
+            background-color: rgba(0,0,0,0.05);
+            border-radius: 4px;
+            text-decoration: none !important; 
+        }
+        .triangle-btn.rotated {
+            transform: rotate(90deg);
+        }
+
+        /* --- 樹形図＆サブメニュー設定 --- */
+        .sub-menu-list {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            padding: 0;
+            margin: 0;
+            position: relative;
+            transition: max-height 0.2s ease-out, opacity 0.2s ease-out;
+        }
+        .sub-menu-list.show { 
+            max-height: 500px; 
+            opacity: 1;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+            animation: slideUpFade 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .sub-menu-list a { 
+            font-size: 0.95rem !important;
+            padding-left: 55px !important; 
+            padding-top: 8px !important; 
+            padding-bottom: 8px !important;
+        }
+
+        .sub-menu-list li:not(:last-child)::before {
+            content: "";
+            position: absolute;
+            left: 31px;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: #ccc;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .sub-menu-list li:last-child::before {
+            content: "";
+            position: absolute;
+            left: 31px;
+            top: 0;
+            width: 2px;
+            height: 22px;
+            background-color: #ccc;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .sub-menu-list li::after {
+            content: "";
+            position: absolute;
+            left: 31px;
+            top: 22px;
+            width: 15px;
+            height: 2px;
+            background-color: #ccc;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .sub-menu-list li:first-child::before {
+            top: -12px !important;
+            height: calc(100% + 12px) !important;
+        }
+        .sub-menu-list li:first-child:last-child::before {
+            height: 34px !important;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            visibility: hidden;
+            z-index: 999;
+            transition: background 0.6s ease, visibility 0.6s;
+        }
+        .overlay.active {
+            background: rgba(0, 0, 0, 0.5);
+            visibility: visible;
+        }
+
+        /* --- バナーデザイン --- */
+        .hero-banner {
+            width: 100%;
+            height: 180px; 
+            background: #061a2b; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-banner::before {
+            content: '𝄞';
+            position: absolute;
+            font-size: 42rem; 
+            color: rgba(0, 180, 216, 0.12); 
+            right: 4%; 
+            top: -270px; 
+            transform: rotate(8deg);
+            font-family: serif;
+            pointer-events: none;
+            z-index: 1;
+            line-height: 1;
+        }
+
+        .line-deco {
+            position: absolute;
+            width: 100%;
+            height: 98px; 
+            top: 48%; 
+            left: 5%; 
+            transform: translateY(-50%) rotate(-3.5deg);
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.08),
+                rgba(255, 255, 255, 0.08) 2px,
+                transparent 2px,
+                transparent 24px
+            );
+            border-left: 6px solid rgba(255, 255, 255, 0.12);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .staff-start {
+            position: absolute;
+            left: 7.5%; 
+            top: 72%; 
+            transform: translateY(-50%) rotate(-3.5deg);
+            z-index: 3;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .staff-start .f-clef {
+            font-size: 8rem;
+            color: rgba(255, 255, 255, 0.15);
+            font-family: serif;
+            line-height: 1;
+            margin-top: -30px; 
+            margin-right: 15px; 
+        }
+
+        .staff-start .time-sig {
+            font-size: 3.5rem; 
+            color: rgba(255, 255, 255, 0.15);
+            font-family: serif;
+            line-height: 0.8;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .hero-banner h1 {
+            font-size: 3.3rem; 
+            margin: 0;
+            letter-spacing: 0.1em;
+            font-family: "Hiragino Mincho ProN", serif;
+            color: #fff;
+            z-index: 10;
+            text-shadow: none; 
+        }
+
+        /* --- メニューアイコン --- */
+        .menu-icon {
+            position: fixed;
+            top: 30px;
+            left: 35px;
+            width: 45px;
+            height: 32px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 1001;
+        }
+
+        .menu-icon span {
+            display: block;
+            width: 100%;
+            height: 5px;
+            background-color: white; 
+            border-radius: 4px;
+            transition: background-color 0.3s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+        }
+
+        .menu-icon:hover span { background-color: #cccccc; }
+        .menu-icon.scrolled span { background-color: #0077b6; }
+        .menu-icon.scrolled:hover span { background-color: #00b4d8; }
+        .menu-icon.active span { background-color: #0077b6; }
+        .menu-icon.active:hover span { background-color: #00b4d8; }
+        
+        .menu-icon.active span:nth-child(1) { transform: translateY(13.5px) rotate(45deg); }
+        .menu-icon.active span:nth-child(2) { opacity: 0; transform: scale(0); }
+        .menu-icon.active span:nth-child(3) { transform: translateY(-13.5px) rotate(-45deg); }
+
+        /* --- メインコンテンツ --- */
+        .main { 
+            width: 95%; 
+            max-width: 1000px; 
+            margin: 0 auto 60px; 
+            background: #ffffff; 
+            padding: 30px 60px 60px; 
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 20;
+        }
+
+        p { 
+            margin: 0; 
+            line-height: 1.7; 
+        }
+
+        /* --- 目次 --- */
+        .contents-box {
+            background-color: #f8f9fa; 
+            border: 1px solid #e9ecef;
+            padding: 20px 40px 20px 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            display: inline-block; 
+            min-width: 280px;      
+        }
+        .contents-title {
+            font-weight: bold;
+            color: #0077b6;
+            border-bottom: 2px solid #00b4d8;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+        .contents-box ul { list-style: none; padding: 0; margin: 0; display: block; }
+        .contents-box li { position: relative; margin-bottom: 2px; display: flex; flex-direction: column; align-items: flex-start; }
+        .contents-box li > a { display: inline-block; padding: 5px 0; margin: 0; text-decoration: none !important; } 
+        .contents-box a:hover, .contents-box a:hover span { text-decoration: none !important; }
+        .contents-box li::before { content: "・"; color: #00b4d8; margin-right: 8px; font-size: 1rem; font-weight: bold; position: absolute; left: -15px; top: 5px; } 
+
+        .contents-box .sub-menu-list li::before,
+        .contents-box .sub-menu-list li::after { display: none; }
+        .contents-box .sub-menu-list a { padding-left: 25px !important; }
+        .contents-box ul { padding-left: 15px; }
+
+        /* スクロール時の着地位置調整 */
+        h2, h3.qa-sub, .qa-item {
+            scroll-margin-top: 100px; 
+        }
+
+        h2 { 
+            border-left: 8px solid #0077b6; 
+            background: #f1f8ff; 
+            color: #0077b6; 
+            padding: 10px 15px; 
+            margin-top: 30px; 
+            margin-bottom: 12px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        h2:first-of-type { margin-top: 0; }
+
+        /* --- Q&A見出し --- */
+        h3.qa-sub {
+            color: #2d3748; 
+            display: block; 
+            margin-top: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            width: 100%; 
+            box-sizing: border-box;
+            border-bottom: none !important; 
+        }
+        h3.qa-sub span {
+            display: inline-block;
+            border-bottom: 2px solid #cbd5e1; 
+            padding-bottom: 8px;
+            width: 100%;
+        }
+
+        /* 画像装飾 */
+        .ui-image-container {
+            margin: 20px 0;
+            text-align: left;
+            padding-left: 5px; 
+        }
+        .ui-image {
+            max-width: 55%; 
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border: 1px solid #ddd;
+        }
+        .midi-image {
+            float: right;
+            max-width: 400px;
+            height: auto;
+            border-radius: 10px;
+            margin-left: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        /* ボックスデザイン（共通） */
+        .info-box { 
+            border-left: 8px solid #00b4d8; 
+            background: #fff; 
+            border: 1px solid #eee; 
+            border-left-width: 8px; 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 0 8px 8px 0; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .info-name { 
+            font-weight: bold; 
+            color: #0077b6; 
+            font-size: 1.15rem; 
+            margin-bottom: 8px; 
+            display: block; 
+        }
+
+        .simple-info-section {
+            margin: 30px 0;
+            padding: 0 10px;
+        }
+        .simple-info-title {
+            font-weight: bold;
+            color: #003049;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: block;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .history-list { list-style: none; padding: 0; margin-bottom: 20px; }
+        .history-list li { 
+            display: flex; 
+            margin-bottom: 8px; 
+            border-bottom: 1px solid #f1f1f1;
+            padding-bottom: 4px;
+        }
+        .history-list li strong { 
+            min-width: 140px; 
+            color: #555; 
+            flex-shrink: 0; 
+        }
+
+        .update-info { margin-top: 20px; color: #333; font-size: 1rem; }
+
+        /* --- 展開式設定 --- */
+        details { 
+            margin-top: 15px; 
+            border: 1px solid #e0e6ed;
+            border-radius: 8px; 
+            overflow: hidden; 
+        }
+
+        summary { 
+            background: #f1f5f9; 
+            padding: 18px 24px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: #475569; 
+            list-style: none; 
+            outline: none;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        summary::-webkit-details-marker { display: none; }
+        summary::before {
+            content: '＋';
+            margin-right: 15px;
+            color: #94a3b8;
+            transition: transform 0.3s ease;
+        }
+
+        details[open] summary {
+            background: #f8fafc;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        details[open] summary::before { content: '－'; }
+
+        summary:hover { background: #e2e8f0; }
+
+        details[open] .version-content, 
+        details[open] .qa-nav-content, 
+        details[open] .instrument-content {
+            animation: slideUpFade 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        details .version-content, details .qa-nav-content, details .instrument-content {
+            padding: 24px;
+            background: #ffffff; 
+        }
+
+        .qa-nav-list { list-style: none; padding: 0; margin: 0; }
+        .qa-nav-list li { margin-bottom: 10px; padding-left: 25px; position: relative; }
+        .qa-nav-list li::before { content: "Q."; position: absolute; left: 0; color: #0047ab; font-weight: bold; }
+        .qa-nav-list a { font-weight: normal; color: #333; }
+        .qa-nav-list a:hover { color: #0077b6; }
+
+        .qa-nav-category { font-weight: bold; color: #2d3748; margin: 15px 0 10px 0; border-left: 4px solid #cbd5e1; padding-left: 10px; }
+        .qa-nav-category:first-child { margin-top: 0; }
+
+        .version-table, .instrument-table { width: 100%; border-collapse: collapse; }
+        .version-table th, .version-table td, .instrument-table th, .instrument-table td { 
+            border-bottom: 1px solid #f1f5f9; 
+            padding: 12px 15px; 
+            text-align: left; 
+        }
+        .instrument-table th { background: #f8fafc; color: #0077b6; font-weight: bold; width: 120px; }
+        .version-table tr:last-child th, .version-table tr:last-child td, .instrument-table tr:last-child td { border-bottom: none; }
+        .version-table th { color: #8898aa; font-size: 0.85rem; width: 140px; font-weight: normal; }
+
+        .qa-item { margin-bottom: 35px; }
+        .qa-item::after { content: ""; display: block; clear: both; } 
+        .qa-q { font-weight: bold; color: #333; display: block; margin-bottom: 8px; position: relative; padding-left: 35px; font-size: 1.05rem; }
+        .qa-q::before { content: "Q."; position: absolute; left: 0; color: #0047ab; font-weight: 900; }
+        .qa-a { color: #333; padding-left: 35px; position: relative; line-height: 1.7; white-space: pre-wrap; margin: 0; }
+        .qa-a::before { content: "A."; position: absolute; left: 0; color: #c53030; font-weight: 900; }
+
+        a { color: #0077b6; text-decoration: none; font-weight: bold; transition: color 0.2s; }
+        a:hover { color: #00b4d8; text-decoration: underline; }
+
+        footer { text-align: center; color: #78909c; padding: 40px 0; }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar" id="sidebar">
+        <h3>Contents</h3>
+        <ul>
+            <li><a href="#summary" onclick="closeMenu()">概要</a></li>
+            <li><a href="#about" onclick="closeMenu()">おんjぴあのとは</a></li>
+            <li>
+                <a href="#features" onclick="closeMenu()">機能<span class="triangle-btn" onclick="toggleSubMenu(event, 'featuresSub', this)">▶</span></a>
+                <ul class="sub-menu-list" id="featuresSub">
+                    <li><a href="#features" onclick="closeMenu()">おんjぴあの機能まとめ</a></li>
+                    <li><a href="#midi-guide" onclick="closeMenu()">MIDIキーボードでの演奏</a></li>
+                </ul>
+            </li>
+            <li><a href="#history" onclick="closeMenu()">年表</a></li>
+            <li><a href="#terminology" onclick="closeMenu()">用語解説</a></li>
+            <li>
+                <a href="#qa" onclick="closeMenu()">Q＆A<span class="triangle-btn" onclick="toggleSubMenu(event, 'qaSub', this)">▶</span></a>
+                <ul class="sub-menu-list" id="qaSub">
+                    <li><a href="#q1" onclick="closeMenu()">基本的な機能についてのQ&A</a></li>
+                    <li><a href="#q9" onclick="closeMenu()">指で演奏する場合のQ&A</a></li>
+                    <li><a href="#q11" onclick="closeMenu()">MIDIキーボードでのQ&A</a></li>
+                </ul>
+            </li>
+            <li><a href="#links" onclick="closeMenu()">関連リンク</a></li>
+        </ul>
+    </nav>
+
+    <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+    <div class="menu-icon" onclick="toggleMenu()" id="menuIcon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <div class="hero-banner" id="hero">
+        <div class="line-deco"></div>
+        <div class="staff-start">
+            <div class="f-clef">𝄢</div>
+            <div class="time-sig">4<br>4</div>
+        </div>
+        <h1>おんjぴあのwiki</h1>
+    </div>
+
+    <div class="main">
+        <h2 id="summary">概要</h2>
+        <p>おんjぴあのwikiでは「おんjぴあの」の機能やツールについて解説しています。</p>
+        <p>おんjぴあのについて何かお困りの際は「機能」や「Q＆A」をご確認ください。それでも解決しない場合は、おんjピアノ部もしくはおんjぴあのwiki管理スレにてご質問ください。</p>
+        <p>当wikiやおんjぴあのに関する質問、要望などがあればサイト下部のリンク先までお願いします。</p>
+
+        <div class="contents-box">
+            <div class="contents-title">目次</div>
+            <ul>
+                <li><a href="#about">おんjぴあのとは</a></li>
+                <li>
+                    <a href="#features"><span>機能</span><span class="triangle-btn" onclick="toggleSubMenu(event, 'featuresSubContents', this)">▶</span></a>
+                    <ul class="sub-menu-list" id="featuresSubContents">
+                        <li><a href="#features">おんjぴあの機能まとめ</a></li>
+                        <li><a href="#midi-guide">MIDIキーボードでの演奏</a></li>
+                    </ul>
+                </li>
+                <li><a href="#history">年表</a></li>
+                <li><a href="#terminology">用語解説</a></li>
+                <li>
+                    <a href="#qa"><span>Q＆A</span><span class="triangle-btn" onclick="toggleSubMenu(event, 'qaSubContents', this)">▶</span></a>
+                    <ul class="sub-menu-list" id="qaSubContents">
+                        <li><a href="#q1">基本的な機能についてのQ&A</a></li>
+                        <li><a href="#q9">指で演奏する場合のQ&A</a></li>
+                        <li><a href="#q11">MIDIキーボードでのQ&A</a></li>
+                    </ul>
+                </li>
+                <li><a href="#links">関連リンク</a></li>
+            </ul>
+        </div>
+
+        <h2 id="about">おんjぴあのとは</h2>
+        <p>「おんjぴあの」はおんj（おーぷん2ch）内で使えるピアノ機能です。</p>
+        <p>スレタイに「ピアノ（全角カタカナ）」を入れることで起動でき、スレにいる人とリアルタイムで演奏を共有することができます。</p>
+        <p>MIDIキーボードも使用できるため、本格的な演奏が可能です。</p>
+
+        <h2 id="features">機能</h2>
+        <div class="ui-image-container">
+            <img src="piano.jpg" alt="おんjぴあの 操作画面" class="ui-image">
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">① ID表示</span>
+            <p>自身のIDが表示されます。このIDはおんjぴあの専用のものです。おんjのIDと同じく、日付が変わるとこのIDも変わります。</p>
+        </div>
+        
+        <div class="info-box">
+            <span class="info-name">② 音色選択</span>
+            <p>音色を選択できます。音色は現在40種類収録されています。</p>
+            <details>
+                <summary>各音色の所感まとめを表示する</summary>
+                <div class="instrument-content">
+                    <table class="instrument-table">
+                        <tr><th>ピアノ1</th><td>シンプルな8bit系</td></tr>
+                        <tr><th>ピアノ2</th><td>こもった感じの音　低音が聞こえにくい</td></tr>
+                        <tr><th>ピアノ3</th><td>2よりこもった感じ　低音が聞こえにくい</td></tr>
+                        <tr><th>ピアノ4</th><td>1とほぼ同じ　若干静か</td></tr>
+                        <tr><th>エレピ1</th><td>こもってる　若干粒立ちが良い　低音聞こえにくい</td></tr>
+                        <tr><th>エレピ2</th><td>1よりもこもってる　低音✕</td></tr>
+                        <tr><th>オルガ1</th><td>8bit系　若干低音が荒い</td></tr>
+                        <tr><th>オルガ2</th><td>1より荒い　高い音金管っぽい</td></tr>
+                        <tr><th>ベル1</th><td>こもってる　低音✕</td></tr>
+                        <tr><th>ベル2</th><td>1よりもはっきりしてる　低音✕</td></tr>
+                        <tr><th>チャイム</th><td>大分こもってる　音が小さい　低音✕</td></tr>
+                        <tr><th>オルゴ</th><td>こもり気味　低音少しまし</td></tr>
+                        <tr><th>ギタ1</th><td>軽めのbit音</td></tr>
+                        <tr><th>ギタ2</th><td>ほぼ8bit　若干静か？</td></tr>
+                        <tr><th>ギタ3</th><td>低音荒め　若干金管っぽい</td></tr>
+                        <tr><th>シャミセ</th><td>こもってる　低音✕</td></tr>
+                        <tr><th>ベース1</th><td>ほぼ8bit　若干低音強い？</td></tr>
+                        <tr><th>ベース2</th><td>こもってる</td></tr>
+                        <tr><th>ベース3</th><td>金管っぽい</td></tr>
+                        <tr><th>リード1</th><td>荒め　金管っぽい</td></tr>
+                        <tr><th>リード2</th><td>ほぼ8bit</td></tr>
+                        <tr><th>8bitL</th><td>安定の音色　若干うるさい</td></tr>
+                        <tr><th>パッド1</th><td>オカリナっぽい？　低音✕</td></tr>
+                        <tr><th>パッド2</th><td>1よりこもってる　低音✕</td></tr>
+                        <tr><th>ストリン</th><td>金管っぽい</td></tr>
+                        <tr><th>チップ1</th><td>ほぼ8bit</td></tr>
+                        <tr><th>チップ2</th><td>ほぼ8bit　音が粒立ってる</td></tr>
+                        <tr><th>ピコピ</th><td>こもってる</td></tr>
+                        <tr><th>ネコニャ</th><td>こもってる</td></tr>
+                        <tr><th>カエル</th><td>金管っぽい</td></tr>
+                        <tr><th>ホワーン</th><td>鉄琴みたい　低音✕</td></tr>
+                        <tr><th>フルート</th><td>フルートっぽい　低音✕</td></tr>
+                        <tr><th>クラリネ</th><td>クラリネットっぽい</td></tr>
+                        <tr><th>オーボエ</th><td>金管っぽい　若干軽め</td></tr>
+                        <tr><th>サックス</th><td>金管っぽい</td></tr>
+                        <tr><th>ブラス</th><td>8bit系　若干静か</td></tr>
+                        <tr><th>コーラス</th><td>笛っぽい　低音✕</td></tr>
+                        <tr><th>ハープ</th><td>若干こもってる　若干粒立ってる</td></tr>
+                        <tr><th>マリンバ</th><td>マリンバっぽい</td></tr>
+                        <tr><th>ビブラ</th><td>若干こもってる</td></tr>
+                        <tr><th>コト</th><td>8bit系　若干静か</td></tr>
+                    </table>
+                </div>
+            </details>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">③ オクターブ変更</span>
+            <p>オクターブを変更できます。◀を押すと低く、▶を押すと高くなります。</p>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">④ 鍵盤数変更</span>
+            <p>表示される鍵盤数を変更できます。＋を押すと大きく（鍵盤数が少なく）−を押すと小さく（鍵盤数が多く）なります。</p>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">⑤ 鍵盤</span>
+            <p>この鍵盤をタップすることで演奏できます。自分の演奏だけでなく、他の人の演奏もこの鍵盤に表示されます。鍵盤の色は音の強さによって変わります。※鍵盤をタップして演奏する場合は音の強さは一定になります</p>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">⑥ 開発状況＆更新メモ</span>
+            <p>おんjぴあのについての開発状況や更新状況が確認できます。 <a href="https://hayabusa.open2ch.net/lib/game/piano/memo.txt" target="_blank">https://hayabusa.open2ch.net/lib/game/piano/memo.txt</a></p>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">⑦ 演奏中の人のID表示</span>
+            <p>演奏している人のID（おんjぴあの専用）が表示されます。他の人のIDだけでなく、自身のIDも表示されます。ここに表示されたIDをタップすることでミュート、ミュート解除ができます。ミュートしている場合はIDが暗くなり、ミュートを解除している場合は明るくなります。荒らし対策として最初はミュートした状態になるため、演奏を聞きたい場合はミュートを解除してください。</p>
+        </div>
+
+        <div class="simple-info-section clearfix" id="midi-guide">
+            <span class="simple-info-title">MIDIキーボードで演奏する場合</span>
+            <img src="midi.png" alt="おんjぴあの MIDI表示" class="midi-image">
+            <p>MIDIキーボードとおんjぴあのを開いているブラウザを線で繋ぐ（通信接続が可能かはわかっていません）ことで演奏できます。※ブラウザにMIDIデバイスの操作と再プログラムを許可する必要があります</p>
+            <p>接続が完了すると右上に「MIDI」という表示が出ます。</p>
+            <p>ペダルの使用は可能ですが、ペダルを踏んだ状態で鍵盤を離すと音が大きくなる不具合が発生しています。対策としてMIDIキーボードのベロシティを強めで固定しておくと少しマシになります。
+
+        <h2 id="history">年表</h2>
+        <ul class="history-list">
+            <li><strong>2025/12/8</strong> <span>おんjピアノ公開</span></li>
+            <li><strong>2025/12/9</strong> <span>楽器やオクターブ変更、デフォルトミュート制に対応</span></li>
+            <li><strong>2025/12/10</strong> <span>外部MIDIキーボード、鍵盤サイズ変更に対応</span></li>
+            <li><strong>2025/12/11</strong> <span>ペダル、音強弱、PCに対応</span></li>
+            <li><strong>2025/12/13</strong> <span>ID日別制に ペダル、音強弱の再調整</span></li>
+            <li><strong>2025/12/14</strong> <span>音が自然減退するように</span></li>
+            <li><strong>2026/2/10</strong> <span>現行のピアノ部ができる</span></li>
+            <li><strong>2026/3/19</strong> <span>おんjぴあの故障（演奏共有ができなくなる）</span></li>
+            <li><strong>2026/4/20</strong> <span>おんjぴあの復旧</span></li>
+        </ul>
+
+        <p class="update-info">おんjぴあのは何度かアップデートを行なっており、現在 ver2 から ver15 までのリンクが確認されています。</p>
+        
+        <details>
+            <summary>各バージョンへのリンクを表示する</summary>
+            <div class="version-content">
+                <table class="version-table">
+                    <tr>
+                        <th>ver 2 〜 5</th>
+                        <td>
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v2" target="_blank">v2</a> / 
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v3" target="_blank">v3</a> / 
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v4" target="_blank">v4</a> / 
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v5" target="_blank">v5</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>ver 6 〜 9</th>
+                        <td>
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v6" target="_blank">v6</a> / 
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v7" target="_blank">v7</a> / 
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v8" target="_blank">v8</a> / 
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v9" target="_blank">v9</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>ver 10 〜 13</th>
+                        <td>
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v10" target="_blank">v10</a> / 
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v11" target="_blank">v11</a> / 
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v12" target="_blank">v12</a> / 
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v13" target="_blank">v13</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>ver 14 〜 15</th>
+                        <td>
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v14" target="_blank">v14</a> / 
+                            <a href="https://hayabusa.open2ch.net/lib/game/piano/piano.v15" target="_blank">v15</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </details>
+
+        <h2 id="terminology">用語解説</h2>
+        <div class="info-box">
+            <span class="info-name">MIDIキーボード</span>
+            <p>MIDIと呼ばれる演奏情報を音楽ソフトに入力するためのコントローラー。この機能が付いたキーボードをデバイスと接続することでキーボードを使った演奏が可能。</p>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">指ポチ</span>
+            <p>MIDIキーボードなどを使用せず、指（マウスやスマホのタッチパネル）で演奏すること。</p>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">自動演奏</span>
+            <p>おんjぴあのでは外部ツールや拡張機能を使うことで自動演奏を行うことができる。ただし、epianoでは禁止されているため注意。その場の空気に応じて、節度を持って使用する必要がある。</p>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">MIDI自動演奏</span>
+            <p>loopmidiというツールを使用する自動演奏のこと。拡張機能を用いた自動演奏と区別するための呼び方。</p>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">json自動演奏</span>
+            <p>拡張機能を用いた自動演奏のこと。この拡張機能がjsonという形式のファイルを使用することが由来。</p>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">epiano</span>
+            <p>矢野さとる氏制作のリアルタイムでピアノ演奏を共有できるWebサービス。おんjぴあのと違い、音色はピアノのみである。おんjぴあのが故障などで利用できない場合は、主に本サイトを避難先として利用している。<a href="https://epiano.jp/" target="_blank">https://epiano.jp/</a></p>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">multiplayer（マルチプレイヤー）/マルチ</span>
+            <p>海外のピアノ共有サイト。epianoの元ネタになった。音色などのカスタムが豊富。<a href="https://multiplayerpiano.com/" target="_blank">https://multiplayerpiano.com/</a></p>
+        </div>
+
+        <div class="info-box">
+            <span class="info-name">Shared-Piano（シェアピ）</span>
+            <p>海外のピアノ共有サイト。ピアノだけでなく様々な音色が備わっている。<a href="https://musiclab.chromeexperiments.com/Shared-Piano/#gFDYwKggY" target="_blank">https://musiclab.chromeexperiments.com/Shared-Piano/#gFDYwKggY</a></p>
+        </div>
+
+        <h2 id="qa">Q＆A</h2>
+
+        <details>
+            <summary>質問一覧（クリックで各項目へ）</summary>
+            <div class="qa-nav-content">
+                <div class="qa-nav-category">〈基本的な機能についてのQ&A〉</div>
+                <ul class="qa-nav-list">
+                    <li><a href="#q1">おんjピアノって何なの？</a></li>
+                    <li><a href="#q2">どうやって演奏するの？</a></li>
+                    <li><a href="#q3">「midiの操作と再プログラムをリクエストしています」の許可は？</a></li>
+                    <li><a href="#q4">音が聞こえない</a></li>
+                    <li><a href="#q5">音色を変更したい</a></li>
+                    <li><a href="#q6">鍵盤数を変更したい</a></li>
+                    <li><a href="#q7">オクターブを変更したい</a></li>
+                    <li><a href="#q8">パソコンでも演奏できる？</a></li>
+                </ul>
+
+                <div class="qa-nav-category">〈指で演奏する場合のQ&A〉</div>
+                <ul class="qa-nav-list">
+                    <li><a href="#q9">和音が鳴らない，ニ音同時に鳴らせない</a></li>
+                    <li><a href="#q10">演奏しにくい</a></li>
+                </ul>
+
+                <div class="qa-nav-category">〈MIDIキーボードで演奏する場合のQ&A〉</div>
+                <ul class="qa-nav-list">
+                    <li><a href="#q11">どうやって使うの？</a></li>
+                    <li><a href="#q12">キーボードが読み込まれているか確認する方法は？</a></li>
+                    <li><a href="#q13">キーボードが読み込まれているが音が出ない</a></li>
+                </ul>
+            </div>
+        </details>
+        
+        <h3 class="qa-sub" id="q1-anchor"><span>〈基本的な機能についてのQ&A〉</span></h3>
+        <div class="qa-item" id="q1">
+            <span class="qa-q">おんjピアノって何なの？</span>
+            <p class="qa-a">おんj（おーぷん2ch）内で使えるピアノ機能です。
+スレにいる人とリアルタイムで演奏を共有することができます。</p>
+        </div>
+        <div class="qa-item" id="q2">
+            <span class="qa-q">どうやって演奏するの？</span>
+            <p class="qa-a">スレ上に表示されている鍵盤を押すと演奏できます。
+デバイスとMIDIキーボードを接続することでMIDIキーボードでの演奏も可能です。</p>
+        </div>
+        <div class="qa-item" id="q3">
+            <span class="qa-q">「midiの操作と再プログラムをリクエストしています」という文が表示されたけど許可していいの？</span>
+            <p class="qa-a">許可して大丈夫です。
+MIDIキーボードで演奏する場合は許可する必要があります。</p>
+        </div>
+        <div class="qa-item" id="q4">
+            <span class="qa-q">音が聞こえない</span>
+            <p class="qa-a">おんjピアノは荒らし防止のためデフォルトミュート制になっています。
+おんjピアノ下部におんjピアノ専用のIDが表示されているため、演奏を聴きたい場合はそのIDを押してください。
+なお、ミュートにしたい場合はもう一度IDを押すとミュートにできます。
+自分の演奏が聴こえない場合は誤って自分のIDをミュートにしてしまったいる可能性があります。
+おんjピアノ左上に自分のIDが表示されているため、そのIDがミュートになっていないか確認してください。</p>
+        </div>
+        <div class="qa-item" id="q5">
+            <span class="qa-q">音色を変更したい</span>
+            <p class="qa-a">おんjピアノ左上、自身のIDの右側で音色を選択することができます。
+当wiki及びピアノ部スレに各音色の所感をまとめたものを載せています。</p>
+        </div>
+        <div class="qa-item" id="q6">
+            <span class="qa-q">鍵盤数を変更したい</span>
+            <p class="qa-a">おんjピアノ右上の+、-ボタンから変更できます。
++を押すと大きく（鍵盤数が少なく）、-を押すと小さく（鍵盤数が多く）なります。</p>
+        </div>
+        <div class="qa-item" id="q7">
+            <span class="qa-q">オクターブを変更したい</span>
+            <p class="qa-a">おんjピアノ右上、鍵盤数を変更するボタンの左側で変更できます。
+◀を押すと低く、▶を押すと高くなります。
+◀と▶の間に書かれている数字は現在表示されているオクターブを表しています。</p>
+        </div>
+        <div class="qa-item" id="q8">
+            <span class="qa-q">パソコンでも演奏できる？</span>
+            <p class="qa-a">できます。
+ただし、パソコンのキーボードを使用して演奏することはできないため、鍵盤をクリックすることでのみ演奏可能です。</p>
+        </div>
+
+        <h3 class="qa-sub"><span>〈指で演奏する場合のQ&A〉</span></h3>
+        <div class="qa-item" id="q9">
+            <span class="qa-q">和音が鳴らない，ニ音同時に鳴らせない</span>
+            <p class="qa-a">未修正のバグです。
+ニ音以上鳴らしたい場合はMIDIキーボードや自動演奏ツールを使用してください。</p>
+        </div>
+        <div class="qa-item" id="q10">
+            <span class="qa-q">演奏しにくい</span>
+            <p class="qa-a">画面を横向きにして親指で操作するとやりやすいです。</p>
+        </div>
+
+        <h3 class="qa-sub"><span>〈MIDIキーボードで演奏する場合のQ&A〉</span></h3>
+        <div class="qa-item" id="q11">
+            <span class="qa-q">どうやって使うの？</span>
+            <p class="qa-a">おんjピアノを開いているデバイスとMIDIキーボードを線で繋ぐことで演奏可能です。
+サイトにmidiの操作と再プログラムを許可しておいてください。</p>
+        </div>
+        <div class="qa-item" id="q12">
+            <span class="qa-q">キーボードが読み込まれているか確認する方法は？</span>
+            <p class="qa-a">キーボードが読み込まれている場合は「MIDI」という文字ががおんjピアノ右上に表示されます。
+キーボードを操作しても反応しない場合は、まずこの表示が出ているかを確認してください。
+なお、キーボード、デバイスの機種により読み込まれない場合があります。
+個人的にはスマホよりもパソコンの方がMIDI接続は安定する気がします。</p>
+        </div>
+        <div class="qa-item" id="q13">
+            <span class="qa-q">キーボードが読み込まれているが音が出ない</span>
+            <p class="qa-a">その場合は一度サイトを更新してください。
+それでも音が出ない場合はデバイスを再起動してください。</p>
+        </div>
+
+        <h2 id="links">関連リンク</h2>
+        <ul>
+            <li><a href="https://hayabusa.open2ch.net/livejupiter/" target="_blank">おーぷん2ちゃんねる なんでも実況J</a></li>
+            <li><a href="https://x.com/satorunet?s=21" target="_blank">矢野さとる氏公式X</a></li>
+            <li><a href="https://hayabusa.open2ch.net/test/read.cgi/livejupiter/1770720809/" target="_blank">おんjピアノ部Part1</a></li>
+            <li><a href="https://hayabusa.open2ch.net/test/read.cgi/livejupiter/1771697316/" target="_blank">おんjピアノ部Part2</a></li>
+            <li><a href="https://hayabusa.open2ch.net/test/read.cgi/livejupiter/1773582400/" target="_blank">おんjピアノ部Part3</a></li>
+            <li><a href="https://hayabusa.open2ch.net/test/read.cgi/livejupiter/1777135129/2-" target="_blank">おんjピアノ部Part4</a></li>
+            <li><a href="https://epiano.jp/" target="_blank">epiano</a></li>
+            <li><a href="https://epiano.jp/sp/#onj" target="_blank">epianoおんj部屋</a></li>
+            <li><a href="https://multiplayerpiano.com/" target="_blank">multiplayer</a></li>
+            <li><a href="https://musiclab.chromeexperiments.com/Shared-Piano" target="_blank">Shared-Piano</a></li>
+            <li><a href="https://hayabusa.open2ch.net/test/read.cgi/livejupiter/1777953452/l50" target="_blank">おんjぴあのwiki管理スレ</a> 質問や要望はこちらへどうぞ　当wikiの更新情報もこちらに載せています</li>
+        </ul>
+        
+        <footer>管理者：おんjピアノ部スレ主</footer>
+    </div>
+
+    <script>
+        const menuIcon = document.getElementById('menuIcon');
+        const heroBanner = document.getElementById('hero');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        function toggleMenu() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            menuIcon.classList.toggle('active');
+        }
+
+        function closeMenu() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            menuIcon.classList.remove('active');
+            
+            const subMenus = document.querySelectorAll('.sub-menu-list');
+            const triangles = document.querySelectorAll('.triangle-btn');
+            subMenus.forEach(menu => menu.classList.remove('show'));
+            triangles.forEach(tri => tri.classList.remove('rotated'));
+        }
+
+        function toggleSubMenu(event, subId, btnElement) {
+            event.preventDefault(); 
+            event.stopPropagation(); 
+            
+            const subMenu = document.getElementById(subId);
+            subMenu.classList.toggle('show');
+            btnElement.classList.toggle('rotated');
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    menuIcon.classList.add('scrolled');
+                } else {
+                    menuIcon.classList.remove('scrolled');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        observer.observe(heroBanner);
+    </script>
+</body>
+</html>
