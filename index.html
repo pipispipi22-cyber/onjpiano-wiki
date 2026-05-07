@@ -400,7 +400,7 @@
         }
         .midi-image {
             float: right;
-            max-width: 400px;
+            max-width: 350px;
             height: auto;
             border-radius: 10px;
             margin-left: 20px;
@@ -559,7 +559,8 @@
             <li>
                 <a href="#features" onclick="closeMenu()">機能<span class="triangle-btn" onclick="toggleSubMenu(event, 'featuresSub', this)">▶</span></a>
                 <ul class="sub-menu-list" id="featuresSub">
-                    <li><a href="#features" onclick="closeMenu()">おんjぴあの機能まとめ</a></li>
+                    <li><a href="#features" onclick="closeMenu()">基本機能</a></li>
+                    <li><a href="#key-colors" onclick="closeMenu()">鍵盤の色と音の強さ</a></li>
                     <li><a href="#midi-guide" onclick="closeMenu()">MIDIキーボードでの演奏</a></li>
                 </ul>
             </li>
@@ -570,7 +571,7 @@
                 <ul class="sub-menu-list" id="qaSub">
                     <li><a href="#q1" onclick="closeMenu()">基本的な機能についてのQ&A</a></li>
                     <li><a href="#q9" onclick="closeMenu()">スマホで演奏する場合のQ&A</a></li>
-                    <li><a href="#q11" onclick="closeMenu()">MIDIキーボードでのQ&A</a></li>
+                    <li><a href="#q11" onclick="closeMenu()">MIDIキーボードで演奏する場合のQ&A</a></li>
                 </ul>
             </li>
             <li><a href="#links" onclick="closeMenu()">関連リンク</a></li>
@@ -607,7 +608,8 @@
                 <li>
                     <a href="#features"><span>機能</span><span class="triangle-btn" onclick="toggleSubMenu(event, 'featuresSubContents', this)">▶</span></a>
                     <ul class="sub-menu-list" id="featuresSubContents">
-                        <li><a href="#features">おんjぴあの機能まとめ</a></li>
+                        <li><a href="#features">基本機能</a></li>
+                        <li><a href="#key-colors">鍵盤の色と音の強さ</a></li>
                         <li><a href="#midi-guide">MIDIキーボードでの演奏</a></li>
                     </ul>
                 </li>
@@ -618,7 +620,7 @@
                     <ul class="sub-menu-list" id="qaSubContents">
                         <li><a href="#q1">基本的な機能についてのQ&A</a></li>
                         <li><a href="#q9">スマホで演奏する場合のQ&A</a></li>
-                        <li><a href="#q11">MIDIキーボードでのQ&A</a></li>
+                        <li><a href="#q11">MIDIキーボードで演奏する場合のQ&A</a></li>
                     </ul>
                 </li>
                 <li><a href="#links">関連リンク</a></li>
@@ -718,12 +720,22 @@
             <p>演奏している人のID（おんjぴあの専用）が表示されます。他の人のIDだけでなく、自身のIDも表示されます。ここに表示されたIDをタップすることでミュート、ミュート解除ができます。ミュートしている場合はIDが暗くなり、ミュートを解除している場合は明るくなります。荒らし対策として最初はミュートした状態になるため、演奏を聞きたい場合はミュートを解除してください。</p>
         </div>
 
+        <div class="simple-info-section clearfix" id="key-colors">
+            <span class="simple-info-title">鍵盤の色と音の強さ</span>
+            <img src="kenbaniro.jpg" alt="おんjぴあの 鍵盤の色" class="midi-image">
+            <p>鍵盤の色は音の強さによって変わります。<br>
+ベロシティの数値で管理されており、右図は左から10,20,30,40,50,60,70,80,90,100,110,120,127となっています。<br>
+なお、音の強さはMIDIキーボードや自動演奏でのみ変更することができます。<br>
+スマホで演奏する場合は音の強さは変更できません。</p>
+        </div>
+
         <div class="simple-info-section clearfix" id="midi-guide">
             <span class="simple-info-title">MIDIキーボードで演奏する場合</span>
             <img src="midi.png" alt="おんjぴあの MIDI表示" class="midi-image">
             <p>MIDIキーボードとおんjぴあのを開いているブラウザを線で繋ぐ（通信接続が可能かはわかっていません）ことで演奏できます。※サイトにMIDIデバイスの操作と再プログラムを許可する必要があります</p>
             <p>接続が完了すると右上に「MIDI」という表示が出ます。</p>
-            <p>ペダルの使用は可能ですが、ペダルを踏んだ状態で鍵盤を離すと音が大きくなる不具合が発生しています。対策としてMIDIキーボードのベロシティを強めで固定しておくと少しマシになります。
+            <p>ペダルの使用は可能ですが、ペダルを踏んだ状態で鍵盤を離すと音が大きくなる不具合が発生しています。対策としてMIDIキーボードのベロシティを強めで固定しておくと少しマシになります。</p>
+        </div>
 
         <h2 id="history">年表</h2>
         <ul class="history-list">
