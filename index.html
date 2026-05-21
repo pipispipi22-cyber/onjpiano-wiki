@@ -513,6 +513,14 @@
             .sidebar {
                 width: 280px;
             }
+            /* スクロール時にハンバーガーメニューの線が白背景と同化して消えないように色を設定 */
+            .menu-icon span {
+                background-color: #0077b6;
+            }
+            /* 長いリンク（URL）が画面外にはみ出さないよう自動折り返しを設定 */
+            a {
+                word-break: break-all;
+            }
         }
     </style>
 </head>
