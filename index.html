@@ -513,15 +513,15 @@
             .sidebar {
                 width: 280px;
             }
-            /* ハンバーガーメニューの位置を少し左上に調整（余白を含めるためpaddingを付与） */
+            /* ハンバーガーメニューの位置をページの左上（0,0）にくっつくように調整 */
             .menu-icon {
-                top: 10px;
-                left: 10px;
-                padding: 10px;
+                top: 0;
+                left: 0;
+                padding: 15px 10px 10px 15px; /* アイコン自体の位置バランスを整えるための余白 */
                 width: 40px;
                 height: 28px;
                 box-sizing: content-box;
-                border-radius: 8px;
+                border-radius: 0; /* 端に密着させるため枠全体の角丸をリセット */
                 transition: background-color 0.3s ease, box-shadow 0.3s ease;
             }
             /* バナー上では元の白色、アクティブ（開いた時）は青色 */
@@ -531,15 +531,16 @@
             .menu-icon.active span {
                 background-color: #0077b6;
             }
-            /* バナー上にない（スクロール後）のときだけ、白い四角で囲み、線を青色に変更 */
+            /* バナー上にない（スクロール後）ときだけ、白い四角で囲み（右下だけ角丸）、線を青色に変更 */
             .menu-icon.scrolled {
                 background-color: white;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                border-radius: 0 0 8px 0; /* 左上を端にくっつけるため右下のみ角丸にする */
             }
             .menu-icon.scrolled span {
                 background-color: #0077b6;
             }
-            /* 三本線の回転軸がpadding追加でズレないよう位置を微調整 */
+            /* 三本線の回転軸がpadding変更でズレないよう位置を微調整 */
             .menu-icon.active span:nth-child(1) { transform: translateY(11.5px) rotate(45deg); }
             .menu-icon.active span:nth-child(3) { transform: translateY(-11.5px) rotate(-45deg); }
 
@@ -882,7 +883,6 @@ MIDIキーボードで演奏する場合は許可する必要があります。<
         <div class="qa-item" id="q4">
             <span class="qa-q">音が聞こえない</span>
             <p class="qa-a">おんjピアノは荒らし防止のためデフォルトミュート制になっています。
-
 おんjピアノ下部におんjピアノ専用のIDが表示されているため、演奏を聴きたい場合はそのIDを押してください。
 なお、ミュートにしたい場合はもう一度IDを押すとミュートにできます。
 自分の演奏が聴こえない場合は誤って自分のIDをミュートにしてしまっている可能性があります。
