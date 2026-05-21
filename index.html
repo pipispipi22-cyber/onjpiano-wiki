@@ -481,6 +481,39 @@
         a:hover { color: #00b4d8; text-decoration: underline; }
 
         footer { text-align: center; color: #78909c; padding: 40px 0; }
+
+        /* --- スマホ表示用調整用メディアクエリ --- */
+        @media screen and (max-width: 768px) {
+            .hero-banner h1 {
+                font-size: 2.0rem;
+                padding: 0 15px;
+                box-sizing: border-box;
+            }
+            .main {
+                width: 100%;
+                padding: 25px 15px 40px;
+                box-sizing: border-box;
+                border-radius: 0;
+            }
+            .contents-box {
+                width: 100%;
+                box-sizing: border-box;
+                min-width: auto;
+                padding-right: 20px;
+            }
+            .ui-image {
+                max-width: 100%;
+            }
+            .midi-image {
+                float: none;
+                display: block;
+                max-width: 100%;
+                margin: 15px auto;
+            }
+            .sidebar {
+                width: 280px;
+            }
+        }
     </style>
 </head>
 <body>
