@@ -513,10 +513,36 @@
             .sidebar {
                 width: 280px;
             }
-            /* スクロール時にハンバーガーメニューの線が白背景と同化して消えないように色を設定 */
+            /* ハンバーガーメニューの位置を少し左上に調整（余白を含めるためpaddingを付与） */
+            .menu-icon {
+                top: 10px;
+                left: 10px;
+                padding: 10px;
+                width: 40px;
+                height: 28px;
+                box-sizing: content-box;
+                border-radius: 8px;
+                transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            }
+            /* バナー上では元の白色、アクティブ（開いた時）は青色 */
             .menu-icon span {
+                background-color: white;
+            }
+            .menu-icon.active span {
                 background-color: #0077b6;
             }
+            /* バナー上にない（スクロール後）のときだけ、白い四角で囲み、線を青色に変更 */
+            .menu-icon.scrolled {
+                background-color: white;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
+            .menu-icon.scrolled span {
+                background-color: #0077b6;
+            }
+            /* 三本線の回転軸がpadding追加でズレないよう位置を微調整 */
+            .menu-icon.active span:nth-child(1) { transform: translateY(11.5px) rotate(45deg); }
+            .menu-icon.active span:nth-child(3) { transform: translateY(-11.5px) rotate(-45deg); }
+
             /* 長いリンク（URL）が画面外にはみ出さないよう自動折り返しを設定 */
             a {
                 word-break: break-all;
@@ -856,6 +882,7 @@ MIDIキーボードで演奏する場合は許可する必要があります。<
         <div class="qa-item" id="q4">
             <span class="qa-q">音が聞こえない</span>
             <p class="qa-a">おんjピアノは荒らし防止のためデフォルトミュート制になっています。
+
 おんjピアノ下部におんjピアノ専用のIDが表示されているため、演奏を聴きたい場合はそのIDを押してください。
 なお、ミュートにしたい場合はもう一度IDを押すとミュートにできます。
 自分の演奏が聴こえない場合は誤って自分のIDをミュートにしてしまっている可能性があります。
