@@ -250,7 +250,7 @@
         .main { 
             width: 95%; 
             max-width: 1000px; 
-            margin: 0 auto 60px; 
+            margin: 0 auto 15px; 
             background: #ffffff; 
             padding: 30px 60px 60px; 
             border-radius: 0 0 16px 16px;
@@ -481,7 +481,11 @@
         a { color: #0077b6; text-decoration: none; font-weight: bold; transition: color 0.2s; }
         a:hover { color: #00b4d8; text-decoration: underline; }
 
-        footer { text-align: center; color: #78909c; padding: 40px 0; }
+        .site-footer {
+    text-align: center;
+    color: #78909c;
+    padding: 20px 0 40px;
+}
 
         /* --- スマホ表示用調整用メディアクエリ --- */
         @media screen and (max-width: 768px) {
@@ -1001,11 +1005,15 @@ MIDIキーボードで演奏する場合は許可する必要があります。<
     <li><a href="https://hayabusa.open2ch.net/test/read.cgi/livejupiter/1777953452/l50" target="_blank">おんjぴあの情報まとめ管理スレ</a> 質問や要望はこちらへどうぞ</li>
 </ul>
         
-        <footer>管理者：おんjピアノ部スレ主</footer>
-        <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-    ▲
-</button>
+            <button class="back-to-top" id="backToTop"
+            onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            ▲
+        </button>
     </div>
+
+    <footer class="site-footer">
+        管理者：おんjピアノ部スレ主
+    </footer>
 
     <script>
         const menuIcon = document.getElementById('menuIcon');
