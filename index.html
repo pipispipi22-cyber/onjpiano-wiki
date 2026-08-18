@@ -11,13 +11,13 @@
   gtag('config', 'G-RS27CC1T98');
 </script>
     <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
-    
+
     <meta charset="UTF-8">
     <title>おんjぴあの情報まとめ</title>
     <link rel="icon" type="image/png" href="icon.png">
     <style>
         html { scroll-behavior: smooth; }
-        
+
         body { 
             background-color: #eceff1; 
             color: #333; 
@@ -241,7 +241,7 @@
         .menu-icon.scrolled:hover span { background-color: #00b4d8; }
         .menu-icon.active span { background-color: #0077b6; }
         .menu-icon.active:hover span { background-color: #00b4d8; }
-        
+
         .menu-icon.active span:nth-child(1) { transform: translateY(13.5px) rotate(45deg); }
         .menu-icon.active span:nth-child(2) { opacity: 0; transform: scale(0); }
         .menu-icon.active span:nth-child(3) { transform: translateY(-13.5px) rotate(-45deg); }
@@ -634,33 +634,6 @@
         width: 100%;
     }
 }
-        .sub-info {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-}
-
-.sub-text {
-    flex: 1;
-}
-
-.sub-image {
-    width: 350px;
-    height: auto;
-    border-radius: 8px;
-    margin-top: 30px;
-}
-
-@media screen and (max-width: 768px) {
-    .sub-info {
-        flex-direction: column;
-    }
-
-    .sub-image {
-        width: 100%;
-        margin-top: 15px;
-    }
-}
     </style>
 </head>
 <body>
@@ -754,7 +727,7 @@
             <span class="info-name">① ID表示</span>
             <p>自身のIDが表示されます。このIDはおんjぴあの専用のIDであり、日替わり制です。</p>
         </div>
-        
+
         <div class="info-box">
             <span class="info-name">② オクターブ変更</span>
             <p>オクターブを変更できます。◀を押すと低く、▶を押すと高くなります。</p>
@@ -829,16 +802,13 @@
 
         <div class="info-box">
             <span class="info-name">⑤ サブ機能</span>
+            <p>ドラムセット、作曲ツール、サステインペダル、オフライン練習の4つの機能が収録されています。</p>
             <p>ドラムセット、作曲ツール、サステインペダル、オフライン練習の4つの機能が収録されています。<br>
             ドラムセット・・・ドラム機能<br>
             作曲ツール・・・DAW風の画面で作曲が可能<br>
             サステインペダル・・・ペダルを踏んだ状態になる<br>
             オフライン練習・・・一人で練習ができる。オンラインに何人いるかも確認可能</p>
         </div>
-    
-        <img src="sub.jpg" alt="サブ機能" class="sub-image">
-    </div>
-</div>
         <div class="info-box">
             <span class="info-name">⑤ 鍵盤</span>
             <p>この鍵盤をタップすることで演奏できます。自分の演奏だけでなく、他の人の演奏もこの鍵盤に表示されます。鍵盤の色は音の強さによって変わります。※鍵盤をタップして演奏する場合は音の強さは一定になります</p>
@@ -885,7 +855,7 @@
         </ul>
 
         <p class="update-info">おんjぴあのは何度かアップデートを行なっており、現在 ver2 から ver15 までのリンクが確認されています。</p>
-        
+
         <details>
             <summary>各バージョンへのリンクを表示する</summary>
             <div class="version-content">
@@ -1000,7 +970,7 @@
                 </ul>
             </div>
         </details>
-        
+
         <h3 class="qa-sub" id="q1-anchor"><span>〈基本的な機能についてのQ&A〉</span></h3>
         <div class="qa-item" id="q1">
             <span class="qa-q">おんjピアノって何なの？</span>
@@ -1098,7 +1068,7 @@ MIDIキーボードで演奏する場合は許可する必要があります。<
     <li><a href="https://youtube.com/playlist?list=PL1mkApKKOb6RiA5a50DE84H3aBuxDQqfP&si=02fio42eOibWmCJV" target="_blank">ピアノ部連弾まとめ（youtube)</a></li>
     <li><a href="https://hayabusa.open2ch.net/test/read.cgi/livejupiter/1777953452/l50" target="_blank">おんjぴあの情報まとめ管理スレ</a> 質問や要望はこちらへどうぞ</li>
 </ul>
-        
+
             <button class="back-to-top" id="backToTop"
             onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
             ▲
@@ -1125,7 +1095,7 @@ MIDIキーボードで演奏する場合は許可する必要があります。<
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
             menuIcon.classList.remove('active');
-            
+
             const subMenus = document.querySelectorAll('.sub-menu-list');
             const triangles = document.querySelectorAll('.triangle-btn');
             subMenus.forEach(menu => menu.classList.remove('show'));
@@ -1135,7 +1105,7 @@ MIDIキーボードで演奏する場合は許可する必要があります。<
         function toggleSubMenu(event, subId, btnElement) {
             event.preventDefault(); 
             event.stopPropagation(); 
-            
+
             const subMenu = document.getElementById(subId);
             subMenu.classList.toggle('show');
             btnElement.classList.toggle('rotated');
