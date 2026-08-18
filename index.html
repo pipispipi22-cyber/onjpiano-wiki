@@ -634,6 +634,33 @@
         width: 100%;
     }
 }
+        .sub-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.sub-text {
+    flex: 1;
+}
+
+.sub-image {
+    width: 350px;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+@media screen and (max-width: 768px) {
+    .sub-info {
+        flex-direction: column;
+    }
+
+    .sub-image {
+        width: 100%;
+        margin-top: 15px;
+    }
+}
     </style>
 </head>
 <body>
@@ -801,14 +828,20 @@
         </div>
 
         <div class="info-box">
+    <div class="sub-info">
+        <div class="sub-text">
             <span class="info-name">⑤ サブ機能</span>
-            <p>ドラムセット、作曲ツール、サステインペダル、オフライン練習の4つの機能が収録されています。</p>
             <p>ドラムセット、作曲ツール、サステインペダル、オフライン練習の4つの機能が収録されています。<br>
             ドラムセット・・・ドラム機能<br>
             作曲ツール・・・DAW風の画面で作曲が可能<br>
             サステインペダル・・・ペダルを踏んだ状態になる<br>
             オフライン練習・・・一人で練習ができる。オンラインに何人いるかも確認可能</p>
         </div>
+
+        <img src="sub.jpg" alt="サブ機能" class="sub-image">
+    </div>
+</div>
+    
         <div class="info-box">
             <span class="info-name">⑤ 鍵盤</span>
             <p>この鍵盤をタップすることで演奏できます。自分の演奏だけでなく、他の人の演奏もこの鍵盤に表示されます。鍵盤の色は音の強さによって変わります。※鍵盤をタップして演奏する場合は音の強さは一定になります</p>
