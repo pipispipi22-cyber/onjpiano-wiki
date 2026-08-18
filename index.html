@@ -609,6 +609,30 @@
     font-weight: bold;
     font-size: 1.05rem;
 }
+        .instrument-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.instrument-text {
+    flex: 1;
+}
+
+.instrument-image {
+    width: 300px;
+    height: auto;
+    border-radius: 8px;
+}
+        @media screen and (max-width: 768px) {
+    .instrument-info {
+        flex-direction: column;
+    }
+
+    .instrument-image {
+        width: 100%;
+    }
+}
     </style>
 </head>
 <body>
@@ -714,9 +738,16 @@
         </div>
 
             <div class="info-box">
+    <div class="instrument-info">
+        <div class="instrument-text">
             <span class="info-name">④ 音色選択</span>
             <p>音色を選択できます。電子音系が40種類、GM音源（General MIDIの略。異なるメーカー間でも互換性を保てるように作られた共通規格）が128種類、歌声系が2種類の計170種類が収録されています。</p>
-            <details>
+        </div>
+
+        <img src="neiro.jpg" alt="音色選択画面" class="instrument-image">
+    </div>
+
+    <details>
                 <summary>各音色の所感まとめを表示する</summary>
                 <div class="instrument-content">
                     <table class="instrument-table">
